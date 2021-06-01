@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.atopecode.optionals.model.Address;
 import net.atopecode.optionals.model.Person;
 import net.atopecode.optionals.repository.PersonRepository;
 
@@ -27,7 +28,7 @@ public class OptionalUnitTest {
 		personRepository = new PersonRepository();
 	}
 	
-	
+	//Creation tests:
 	@Test
 	public void whenCreateFromNullValue_thenNullPointerException() {
 		Exception ex = assertThrows(NullPointerException.class,
@@ -64,6 +65,8 @@ public class OptionalUnitTest {
 		assertEquals(personOpt.get(), person);
 	}	
 
+	
+	//Get tests:
 	@Test
 	public void whenCreateEmptyOptionalAndGet_thenNoSuchElementException() {
 		Exception ex = assertThrows(NoSuchElementException.class, 
@@ -148,7 +151,7 @@ public class OptionalUnitTest {
 		assertEquals(person.getName(), modifiedName);	
 	}
 	
-	
+	//Map vs FlatMap Test:
 	@Test
 	public void mapAndFlatMap() {
 		Person person = personRepository.getPersonTest();
@@ -168,6 +171,41 @@ public class OptionalUnitTest {
 		
 		assertEquals(emailWithMap, emailWithFlatMap);
 	}
+	
+	//Null Checks validations Test:
+	@Test
+	public void getAddressField_with_AddressNull() {
+		Person personWithAddressNull = personRepository.getPersonWithAddressNull();
+		
+		//Se lanza una Exception ya que 'personWithAddressNull.address' vale 'null'.
+		assertThrows(NullPointerException.class,
+				() -> {
+					String streetFails = personWithAddressNull.getAddress().getStreet();
+				});
+		
+		//No se lanza Exception y se obtiene el valor 'null' por defecto para el campo 'street' al no existir 'Address' para el objeto 'Person'.
+		String street = Optional.ofNullable(personWithAddressNull)
+				.map(person -> person.getAddress())
+				.map(address -> address.getStreet()) //La lambda de este 'map()' para obtener el campo 'street' no se llega a ejecutar porque el 'map()' anterior devuelve un 'Optional' vacío (null/empty).
+				.orElseGet(() -> null);	
+		assertTrue(street == null);
+	}
+	
+	@Test
+	public void getAddressField_with_AddressNotNull() {
+		Person personWithAddress = personRepository.getPersonTest();
+		String street = personWithAddress.getAddress().getStreet();
+		assertTrue(street != null);
+				
+		//En este caso se utiliza 'MethodReference' en el método 'map()' en vez de expresiones lambda pero el resultado es el mismo.
+		String streetOptional = Optional.ofNullable(personWithAddress)
+				.map(Person::getAddress)
+				.map(Address::getStreet)
+				.orElseGet(() -> null);	
+		assertTrue(streetOptional != null);
+		assertEquals(streetOptional, street);
+	}
+	
 	
 	//Notas:
 	/*
