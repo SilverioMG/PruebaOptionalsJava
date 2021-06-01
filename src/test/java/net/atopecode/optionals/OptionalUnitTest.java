@@ -12,16 +12,21 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.atopecode.optionals.model.Person;
+import net.atopecode.optionals.repository.PersonRepository;
 
 public class OptionalUnitTest {
 
+	private PersonRepository personRepository;
 	
-	private Person getPersonTest() {
-		return new Person("Fulano", "fulan@email.es");
+	@BeforeEach
+	public void init() {
+		personRepository = new PersonRepository();
 	}
+	
 	
 	@Test
 	public void whenCreateFromNullValue_thenNullPointerException() {
@@ -34,7 +39,7 @@ public class OptionalUnitTest {
 	
 	@Test
 	public void whenCreateFromNotNullValue_thenOk() {
-		Person person = getPersonTest();
+		Person person = personRepository.getPersonTest();
 		Optional<Person> personOpt = Optional.of(person);
 		System.out.println(personOpt.get());
 		
@@ -52,7 +57,7 @@ public class OptionalUnitTest {
 	
 	@Test
 	public void whenCreateFromNotNullValue_with_ofNullable_thenOk() {
-		Person person = getPersonTest();
+		Person person = personRepository.getPersonTest();
 		Optional<Person> personOpt = Optional.ofNullable(person);
 		
 		assertFalse(personOpt.isEmpty());
@@ -88,7 +93,7 @@ public class OptionalUnitTest {
 	
 	@Test
 	public void safeGetFromOptional_with_orElse_alwaysExecuteFunction() {
-		Person person = getPersonTest();
+		Person person = personRepository.getPersonTest();
 		String notEmptyValue = "NotEmptyOptional";
 		Optional<String> emptyOptional = Optional.ofNullable(notEmptyValue);
 		
@@ -111,7 +116,7 @@ public class OptionalUnitTest {
 	
 	@Test
 	public void safeGetFromOptional_with_orElseGet_ExecuteFunction_onlyWhen_emptyOptional() {
-		Person person = getPersonTest();
+		Person person = personRepository.getPersonTest();
 
 		//Declaro la expresión Lambda en una variable para poder reutilizarla en ambos casos.
 		String modifiedName = "Modified Name";
@@ -143,21 +148,19 @@ public class OptionalUnitTest {
 		assertEquals(person.getName(), modifiedName);	
 	}
 	
-
-	
-	
-	
 	
 	@Test
 	public void mapAndFlatMap() {
-		Person person = getPersonTest();
+		Person person = personRepository.getPersonTest();
 		
 		String emailWithMap = Optional.ofNullable(person)
 				.map(Person::getEmail).orElse(null); //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optinal<T>'.
 		System.out.println("Con map(): " + emailWithMap);
 		assertEquals(emailWithMap, person.getEmail());
 		
-		
+		//'flatMap()' se utiliza en el caso de que los getters de un objeto devuelvan un 'Optional<T>' en vez de directamente el valor 'T'. Si se quiere utilizar 'map()' con un getter
+		//de ese tipo, el resultado del 'map()' sería un 'Optional<Optinal<T>>', por eso se utiliza 'flatMap()', porque no hace el wrapper en un 'Optional<T>' del resultado y devolvería
+		//un 'Optional<T>' que es lo que se necesita en ese caso en concreto.
 		String emailWithFlatMap = Optional.ofNullable(person)
 				.flatMap((p -> Optional.ofNullable(p.getEmail()))).orElse(null); //Con 'flatMap()' se devuelve directamente un 'Optinal<T>' con el resultado deseado.
 		System.out.println("Con faltMap(): " + emailWithFlatMap);
