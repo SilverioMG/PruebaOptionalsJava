@@ -17,10 +17,18 @@ import org.junit.jupiter.api.Test;
 
 import net.atopecode.optionals.model.Address;
 import net.atopecode.optionals.model.Person;
+import net.atopecode.optionals.model.State;
 import net.atopecode.optionals.repository.PersonRepository;
 
-public class OptionalUnitTest {
+//Notas:
+/*
+ * -Para crear un 'Optional' usar siempre 'Optional.ofNullable()' para evitar 'NullPointerExceptions' (porque con 'Optional.get()' si el Optional está vacío se produce una Exception).
+ * -Para obtener el valor de un 'Optional' usar siempre 'orElse()' si se indica directamente un valor, sino tener en cuenta que si se utiliza una función siempre se va a ejecutar
+ *  aunque el 'Optional' no esté vacio. Para asegurarse de que cuando el Optional está vacío no se ejecute la función que devolverá su valor, usar 'orElseGet()'.  
+ */
 
+public class OptionalUnitTest {
+	
 	private PersonRepository personRepository;
 	
 	@BeforeEach
@@ -150,29 +158,8 @@ public class OptionalUnitTest {
 		assertEquals(resultOptional, modifiedName);
 		assertEquals(person.getName(), modifiedName);	
 	}
-	
-	//Map vs FlatMap Test:
-	@Test
-	public void mapAndFlatMap() {
-		Person person = personRepository.getPersonTest();
 		
-		String emailWithMap = Optional.ofNullable(person)
-				.map(Person::getEmail).orElse(null); //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optinal<T>'.
-		System.out.println("Con map(): " + emailWithMap);
-		assertEquals(emailWithMap, person.getEmail());
-		
-		//'flatMap()' se utiliza en el caso de que los getters de un objeto devuelvan un 'Optional<T>' en vez de directamente el valor 'T'. Si se quiere utilizar 'map()' con un getter
-		//de ese tipo, el resultado del 'map()' sería un 'Optional<Optinal<T>>', por eso se utiliza 'flatMap()', porque no hace el wrapper en un 'Optional<T>' del resultado y devolvería
-		//un 'Optional<T>' que es lo que se necesita en ese caso en concreto.
-		String emailWithFlatMap = Optional.ofNullable(person)
-				.flatMap((p -> Optional.ofNullable(p.getEmail()))).orElse(null); //Con 'flatMap()' se devuelve directamente un 'Optinal<T>' con el resultado deseado.
-		System.out.println("Con faltMap(): " + emailWithFlatMap);
-		assertEquals(emailWithFlatMap, person.getEmail());
-		
-		assertEquals(emailWithMap, emailWithFlatMap);
-	}
-	
-	//Null Checks validations Test:
+	//Null Checks validations without using 'if' staments:
 	@Test
 	public void getAddressField_with_AddressNull() {
 		Person personWithAddressNull = personRepository.getPersonWithAddressNull();
@@ -206,11 +193,59 @@ public class OptionalUnitTest {
 		assertEquals(streetOptional, street);
 	}
 	
+	@Test
+	public void getStateField_with_StateNull() {
+		Person personWithStateNull = personRepository.getPersonWithStateNull();
+		
+		//Se lanza una Exception ya que 'personWithStateNull.getAdress().getState()' vale 'null'.
+		assertThrows(NullPointerException.class,
+				() -> {
+					String stateNameFails = personWithStateNull.getAddress().getState().getName();
+				});
+		
+		//No se lanza Exception y se obtiene el valor 'null' por defecto para el campo 'stateName' al no existir 'State' para el campo 'Person.Address'.
+		String stateName = Optional.ofNullable(personWithStateNull)
+				.map(Person::getAddress)
+				.map(Address::getState)
+				.map(State::getName) //La lambda de este 'map()' para obtener el campo 'name' no se llega a ejecutar porque el 'map()' anterior devuelve un 'Optional' vacío (null/emtpy).
+				.orElseGet(() -> null);
+		assertTrue(stateName == null);
+	}
 	
-	//Notas:
-	/*
-	 * -Para crear un 'Optional' usar siempre 'Optional.ofNullable()' para evitar 'NullPointerExceptions'.
-	 * -Para obtener el valor de un 'Optional' usar siempre 'orElse()' si se indica directamente un valor, sino tener en cuenta que si se utiliza una función siempre se va a ejecutar
-	 *  aunque el 'Optional' no esté vacio. Para asegurarse de que cuando el Optional está vacío no se ejecute la función que devolverá su valor, usar 'orElseGet()'.  
-	 */
+	@Test
+	public void getStateField_with_StateNotNull() {
+		Person personWithState = personRepository.getPersonTest();
+		String stateName = personWithState.getAddress().getState().getName();
+		assertTrue(stateName != null);
+		
+		String stateNameOptional = Optional.ofNullable(personWithState)
+				.map(person -> person.getAddress())
+				.map(address -> address.getState())
+				.map(state -> state.getName())
+				.orElseGet(() -> null);
+		assertTrue(stateName != null);
+		assertEquals(stateNameOptional, stateName);
+	}
+	
+	//Map vs FlatMap Test:
+	@Test
+	public void mapAndFlatMap() {
+		Person person = personRepository.getPersonTest();
+		
+		String emailWithMap = Optional.ofNullable(person)
+				.map(Person::getEmail).orElse(null); //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optinal<T>'.
+		System.out.println("Con map(): " + emailWithMap);
+		assertEquals(emailWithMap, person.getEmail());
+		
+		//'flatMap()' se utiliza en el caso de que los getters de un objeto devuelvan un 'Optional<T>' en vez de directamente el valor 'T'. Si se quiere utilizar 'map()' con un getter
+		//de ese tipo, el resultado del 'map()' sería un 'Optional<Optinal<T>>', por eso se utiliza 'flatMap()', porque no hace el wrapper en un 'Optional<T>' del resultado y devolvería
+		//un 'Optional<T>' que es lo que se necesita en ese caso en concreto.
+		String emailWithFlatMap = Optional.ofNullable(person)
+				.flatMap((p -> Optional.ofNullable(p.getEmail()))).orElse(null); //Con 'flatMap()' se devuelve directamente un 'Optinal<T>' con el resultado deseado.
+		System.out.println("Con faltMap(): " + emailWithFlatMap);
+		assertEquals(emailWithFlatMap, person.getEmail());
+		
+		assertEquals(emailWithMap, emailWithFlatMap);
+	}
+	
 }

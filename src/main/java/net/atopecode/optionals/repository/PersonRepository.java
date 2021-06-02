@@ -24,6 +24,12 @@ public class PersonRepository {
 		return new Person("Fulano", "fulano@email.es", null);
 	}
 	
+	public Person getPersonWithStateNull() {
+		Person person = getPersonWithAddressNull();
+		person.setAddress(getAddressWithStateNull());
+		return person;
+	}
+	
 	public Person getPersonTest() {
 		Address address = getAddress();
 		Person person = getPersonWithAddressNull();
