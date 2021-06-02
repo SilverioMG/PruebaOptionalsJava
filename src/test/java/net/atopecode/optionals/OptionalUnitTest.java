@@ -233,15 +233,15 @@ public class OptionalUnitTest {
 		Person person = personRepository.getPersonTest();
 		
 		String emailWithMap = Optional.ofNullable(person)
-				.map(Person::getEmail).orElse(null); //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optinal<T>'.
+				.map(Person::getEmail).orElse(null); //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optional<T>'.
 		System.out.println("Con map(): " + emailWithMap);
 		assertEquals(emailWithMap, person.getEmail());
 		
 		//'flatMap()' se utiliza en el caso de que los getters de un objeto devuelvan un 'Optional<T>' en vez de directamente el valor 'T'. Si se quiere utilizar 'map()' con un getter
-		//de ese tipo, el resultado del 'map()' sería un 'Optional<Optinal<T>>', por eso se utiliza 'flatMap()', porque no hace el wrapper en un 'Optional<T>' del resultado y devolvería
+		//de ese tipo, el resultado del 'map()' sería un 'Optional<Optional<T>>', por eso se utiliza 'flatMap()', porque no hace el wrapper en un 'Optional<T>' del resultado y devolvería
 		//un 'Optional<T>' que es lo que se necesita en ese caso en concreto.
 		String emailWithFlatMap = Optional.ofNullable(person)
-				.flatMap((p -> Optional.ofNullable(p.getEmail()))).orElse(null); //Con 'flatMap()' se devuelve directamente un 'Optinal<T>' con el resultado deseado.
+				.flatMap((p -> Optional.ofNullable(p.getEmail()))).orElse(null); //Con 'flatMap()' se devuelve directamente un 'Optional<T>' con el resultado deseado.
 		System.out.println("Con faltMap(): " + emailWithFlatMap);
 		assertEquals(emailWithFlatMap, person.getEmail());
 		
