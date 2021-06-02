@@ -136,12 +136,6 @@ public class OptionalUnitTest {
 			System.out.println("LambdaModifiedPersonName() executed!"); //Nunca se va a ejecutar esta función lambda.
 			return person.getName();
 		};
-		
-		/*String value = emptyOptional.orElseGet(() -> {
-			person.setName(modifiedName);
-			System.out.println("LambdaModifiedPersonName() executed!"); //Nunca se va a ejecutar esta función lambda.
-			return person.getName();
-		});*/
 
 		//Caso 1: El Optional tiene valor y por lo tanto no se ejecuta la función lambda del 'orElseGet()':
 		String notEmptyValue = "NotEmptyOptional";
