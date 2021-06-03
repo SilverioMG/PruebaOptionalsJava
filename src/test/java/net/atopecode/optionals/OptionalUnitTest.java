@@ -76,6 +76,17 @@ public class OptionalUnitTest {
 	
 	//Get tests:
 	@Test
+	public void checkingOptionalValue() {
+		Optional<String> emptyOptional = Optional.ofNullable(null);
+		boolean isEmpty = emptyOptional.isEmpty();
+		assertTrue(isEmpty);
+		
+		Optional<String> notEmptyOptional = Optional.ofNullable("Valor1");
+		isEmpty = notEmptyOptional.isEmpty();
+		assertFalse(isEmpty);
+	}
+	
+	@Test
 	public void whenCreateEmptyOptionalAndGet_thenNoSuchElementException() {
 		Exception ex = assertThrows(NoSuchElementException.class, 
 				() -> {
