@@ -87,7 +87,7 @@ public class OptionalUnitTest {
 	}
 	
 	@Test
-	public void whenCreateEmptyOptionalAndGet_thenNoSuchElementException() {
+	public void gettingValueFrom_EmptyOptional_then_NoSuchElementException() {
 		Exception ex = assertThrows(NoSuchElementException.class, 
 				() -> {
 					Optional<String> emptyOptional = Optional.empty();
@@ -98,7 +98,7 @@ public class OptionalUnitTest {
 	}
 	
 	@Test
-	public void whenCreateNotEmptyOptionalAndGet_thenOk() {
+	public void gettingValueFrom_NotEmptyOptional_then_Ok() {
 		Optional<String> emptyOptional = Optional.of("Value");
 		String value = emptyOptional.get();
 		System.out.println(value);
