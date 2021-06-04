@@ -74,7 +74,7 @@ public class OptionalUnitTest {
 	}	
 
 	
-	//Get tests:
+	//Getting value tests:
 	@Test
 	public void checkingOptionalValue() {
 		Optional<String> emptyOptional = Optional.ofNullable(null);
