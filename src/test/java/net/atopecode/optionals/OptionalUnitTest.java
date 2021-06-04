@@ -38,7 +38,7 @@ public class OptionalUnitTest {
 	
 	//Creation tests:
 	@Test
-	public void whenCreateFromNullValue_thenNullPointerException() {
+	public void whenCreateFrom_NullValue_then_NullPointerException() {
 		Exception ex = assertThrows(NullPointerException.class,
 				() -> {
 					Person person = null;
@@ -47,7 +47,7 @@ public class OptionalUnitTest {
 	}
 	
 	@Test
-	public void whenCreateFromNotNullValue_thenOk() {
+	public void whenCreateFrom_NotNullValue_then_Ok() {
 		Person person = personRepository.getPersonTest();
 		Optional<Person> personOpt = Optional.of(person);
 		System.out.println(personOpt.get());
@@ -56,7 +56,7 @@ public class OptionalUnitTest {
 	}
 	
 	@Test
-	public void whenCreateFromNullValue_with_ofNullable_thenEmptyOptional() {
+	public void whenCreateFrom_NullValue_with_ofNullable_then_EmptyOptional() {
 		Person person = null;
 		Optional<Person> personOpt = Optional.ofNullable(person);
 
@@ -65,7 +65,7 @@ public class OptionalUnitTest {
 	}
 	
 	@Test
-	public void whenCreateFromNotNullValue_with_ofNullable_thenOk() {
+	public void whenCreateFrom_NotNullValue_with_ofNullable_then_Ok() {
 		Person person = personRepository.getPersonTest();
 		Optional<Person> personOpt = Optional.ofNullable(person);
 		
@@ -120,7 +120,7 @@ public class OptionalUnitTest {
 		Optional<String> emptyOptional = Optional.ofNullable(notEmptyValue);
 		
 		//El objeto 'emptyOptional' no está vacío, pero al utilizar 'orElse()' para recuperar su valor, se ejecutará de todas forma la función enviada como parámetro 'getPersonName()'.
-		//Para evitar que esto suceda es mejor utilizar siempre 'orElseGet()', o si se utiliza 'orElse()' devolver siempre un valor directamente en vez de una función.
+		//Para evitar que esto suceda es mejor utilizar siempre 'orElseGet()', o si se utiliza 'orElse()' indicar siempre un valor directamente en vez de una función.
 		String modifiedName = "Modified Name";
 		String value = emptyOptional.orElse(getModifiedPersonName(person, modifiedName));
 		
