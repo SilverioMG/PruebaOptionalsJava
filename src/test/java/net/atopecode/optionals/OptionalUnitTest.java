@@ -191,7 +191,7 @@ public class OptionalUnitTest {
 				
 		//En este caso se utiliza 'MethodReference' en el método 'map()' en vez de expresiones lambda pero el resultado es el mismo.
 		String streetOptional = Optional.ofNullable(personWithAddress)
-				.map(Person::getAddress)
+				.map(Person::getAddress) //Es equivalente a '.map(person -> person.getAddress())'
 				.map(Address::getStreet)
 				.orElseGet(() -> null);	
 		assertTrue(streetOptional != null);
@@ -252,5 +252,5 @@ public class OptionalUnitTest {
 		
 		assertEquals(emailWithMap, emailWithFlatMap);
 	}
-	
+		
 }
