@@ -247,7 +247,8 @@ public class OptionalUnitTest {
 		Person person = personRepository.getPersonTest();
 		
 		String emailWithMap = Optional.ofNullable(person)
-				.map(Person::getEmail).orElse(null); //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optional<T>'.
+				.map(Person::getEmail) //Con 'map()' se hace un wrapper del resultado 'T' dentro de un objeto 'Optional<T>' automáticamente, pero nosotros devolvemos directamente el tipo 'T'.
+				.orElse(null);
 		System.out.println("Con map(): " + emailWithMap);
 		assertEquals(emailWithMap, person.getEmail());
 		
@@ -255,7 +256,8 @@ public class OptionalUnitTest {
 		//de ese tipo, el resultado del 'map()' sería un 'Optional<Optional<T>>', por eso se utiliza 'flatMap()', porque no hace el wrapper en un 'Optional<T>' del resultado y devolvería
 		//un 'Optional<T>' que es lo que se necesita en ese caso en concreto.
 		String emailWithFlatMap = Optional.ofNullable(person)
-				.flatMap((p -> Optional.ofNullable(p.getEmail()))).orElse(null); //Con 'flatMap()' se devuelve directamente un 'Optional<T>' con el resultado deseado.
+				.flatMap((p -> Optional.ofNullable(p.getEmail()))) //Con 'flatMap()' hay que devolver un 'Optional<T>' con el resultado deseado.
+				.orElse(null);
 		System.out.println("Con faltMap(): " + emailWithFlatMap);
 		assertEquals(emailWithFlatMap, person.getEmail());
 		

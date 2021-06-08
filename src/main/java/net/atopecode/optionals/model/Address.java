@@ -1,5 +1,7 @@
 package net.atopecode.optionals.model;
 
+import java.util.Optional;
+
 public class Address {
 	
 	private String street;
@@ -37,7 +39,21 @@ public class Address {
 	public void setState(State state) {
 		this.state = state;
 	}
+	
+	//Añadimos métodos 'getter' que devuelvan un 'Optional' de cada campo:
+	public Optional<String> getOptionalStreet() {
+		return Optional.ofNullable(street);
+	}
+	
+	public Optional<Integer> getOptionalNumber() {
+		return Optional.ofNullable(number);
+	}
+	
+	public Optional<State> getOptionalState() {
+		return Optional.ofNullable(state);
+	}
 
+	
 	@Override
 	public String toString() {
 		return "Address [street=" + street + ", number=" + number + ", state=" + state + "]";

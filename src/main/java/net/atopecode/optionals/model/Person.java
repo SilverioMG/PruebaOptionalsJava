@@ -1,5 +1,7 @@
 package net.atopecode.optionals.model;
 
+import java.util.Optional;
+
 public class Person {
 	
 	private String name;
@@ -42,6 +44,20 @@ public class Person {
 		this.address = address;
 	}
 
+	//Añadimos métodos 'getter' que devuelvan un 'Optional' de cada campo:
+	public Optional<String> getOptionalName() {
+		return Optional.ofNullable(name);
+	}
+	
+	public Optional<String> getOptionalEmail() {
+		return Optional.ofNullable(email);
+	}
+
+	public Optional<Address> getOptionalAddress() {
+		return Optional.ofNullable(address);
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Person [name=" + name + ", email=" + email + ", address=" + address + "]";
