@@ -164,7 +164,7 @@ public class OptionalUnitTest {
 		assertEquals(person.getName(), modifiedName);	
 	}
 		
-	//Null Checks validations without using 'if' staments:
+	//Null Checks validations without using 'if' statements:
 	@Test
 	public void getAddressField_with_AddressNull() {
 		Person personWithAddressNull = personRepository.getPersonWithAddressNull();
@@ -230,6 +230,15 @@ public class OptionalUnitTest {
 				.orElseGet(() -> null);
 		assertTrue(stateName != null);
 		assertEquals(stateNameOptional, stateName);
+	}
+	
+	@Test public void getPersonField_with_PersonNull() {
+		Person personNull = null;
+		String defaultNameValue = "No se pudo recuperar el 'nombre' porque Persona vale 'null'";
+		String name = Optional.ofNullable(personNull)
+				.map(person -> person.getName()) //No se llega a ejecutar este 'map()' porque se está ejecutando sobre un 'Optional.empty' porque 'personNull' vale 'null'.
+				.orElseGet(() -> defaultNameValue);
+		assertEquals(name, defaultNameValue);
 	}
 	
 	//Map vs FlatMap Test:
