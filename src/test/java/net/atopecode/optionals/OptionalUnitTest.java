@@ -263,5 +263,42 @@ public class OptionalUnitTest {
 		
 		assertEquals(emailWithMap, emailWithFlatMap);
 	}
+	
+	@Test
+	public void using_Map() {
+		Person personTest = personRepository.getPersonTest();
 		
+		Integer addressNumber = Optional.ofNullable(personTest)
+				.map(person -> person.getAddress())
+				.map(address -> address.getNumber())
+				.orElseGet(() -> null);
+		assertNotNull(addressNumber);
+		assertEquals(addressNumber, personTest.getAddress().getNumber());
+	}
+	
+	@Test
+	public void using_FlatMap() {
+		Person personTest = personRepository.getPersonTest();
+		
+		Integer addressNumber = Optional.ofNullable(personTest)
+				.flatMap(person -> person.getOptionalAddress())
+				.flatMap(address -> address.getOptionalNumber())
+				.orElseGet(() -> null);
+		assertNotNull(addressNumber);
+		assertEquals(addressNumber, personTest.getAddress().getNumber());
+	}
+		
+	@Test
+	public void using_Map_and_FlatMap() {
+		Person personTest = personRepository.getPersonTest();
+		
+		Integer stateCode = Optional.ofNullable(personTest)
+				.flatMap(person -> person.getOptionalAddress())
+				.map(address -> address.getState())
+				.flatMap(state -> state.getOptionalCode())
+				.orElseGet(() -> null);
+		
+		assertNotNull(stateCode);
+		assertEquals(stateCode, personTest.getAddress().getState().getCode());
+	}
 }
