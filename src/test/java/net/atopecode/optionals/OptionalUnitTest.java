@@ -99,8 +99,8 @@ public class OptionalUnitTest {
 	
 	@Test
 	public void gettingValueFrom_NotEmptyOptional_then_Ok() {
-		Optional<String> emptyOptional = Optional.of("Value");
-		String value = emptyOptional.get();
+		Optional<String> optional = Optional.of("Value");
+		String value = optional.get();
 		System.out.println(value);
 	}
 	
@@ -117,12 +117,12 @@ public class OptionalUnitTest {
 	public void safeGetFromOptional_with_orElse_alwaysExecuteFunction() {
 		Person person = personRepository.getPersonTest();
 		String notEmptyValue = "NotEmptyOptional";
-		Optional<String> emptyOptional = Optional.ofNullable(notEmptyValue);
+		Optional<String> optional = Optional.ofNullable(notEmptyValue);
 		
-		//El objeto 'emptyOptional' no está vacío, pero al utilizar 'orElse()' para recuperar su valor, se ejecutará de todas forma la función enviada como parámetro 'getPersonName()'.
+		//El objeto 'optional' no está vacío, pero al utilizar 'orElse()' para recuperar su valor, se ejecutará de todas forma la función enviada como parámetro 'getPersonName()'.
 		//Para evitar que esto suceda es mejor utilizar siempre 'orElseGet()', o si se utiliza 'orElse()' indicar siempre un valor directamente en vez de una función.
 		String modifiedName = "Modified Name";
-		String value = emptyOptional.orElse(getModifiedPersonName(person, modifiedName));
+		String value = optional.orElse(getModifiedPersonName(person, modifiedName));
 		
 		assertNotNull(value);
 		assertEquals(value, notEmptyValue);
@@ -150,15 +150,15 @@ public class OptionalUnitTest {
 
 		//Caso 1: El Optional tiene valor y por lo tanto no se ejecuta la función lambda del 'orElseGet()':
 		String notEmptyValue = "NotEmptyOptional";
-		Optional<String> emptyOptional = Optional.ofNullable(notEmptyValue);
-		String resultOptional = emptyOptional.orElseGet(supplierLambda);
+		Optional<String> optional = Optional.ofNullable(notEmptyValue);
+		String resultOptional = optional.orElseGet(supplierLambda);
 		assertNotNull(resultOptional);
 		assertEquals(resultOptional, notEmptyValue);
 		assertNotEquals(person.getName(), modifiedName);
 		
 		//Caso 2: El Optional está vacío (no tiene valor) y se ejecuta la función lambda del 'orElseGet()':
-		emptyOptional = Optional.ofNullable(null);
-		resultOptional = emptyOptional.orElseGet(supplierLambda);
+		optional = Optional.ofNullable(null);
+		resultOptional = optional.orElseGet(supplierLambda);
 		assertNotNull(resultOptional);
 		assertEquals(resultOptional, modifiedName);
 		assertEquals(person.getName(), modifiedName);	
